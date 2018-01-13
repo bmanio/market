@@ -15,18 +15,18 @@ elgg_register_event_handler('init','system','market_init');
 function market_init() {
 
 	elgg_register_library('market', elgg_get_plugins_path() . 'market/lib/market.php');
-	
+
 	elgg_register_page_handler('market','market_page_handler');
 	elgg_register_plugin_hook_handler('entity:url', 'object', 'market_entity_url_handler');
-	
+
 	elgg_register_entity_type('object', 'market');
 
 	$item = new ElggMenuItem('market', elgg_echo('market:title'), 'market/all');
 	elgg_register_menu_item('site', $item);
 
 	elgg_register_plugin_hook_handler('register', 'menu:owner_block', 'market_owner_block_menu');
-	elgg_extend_view('page/elements/sidebar', 'market/sidebar', 100);
-	
+//	elgg_extend_view('page/elements/sidebar', 'market/sidebar', 100);
+
 	//Groups
 	add_group_tool_option('market', elgg_echo('market:enablemarket'), true);
 	elgg_extend_view('groups/tool_latest', 'market/group_module');
@@ -53,7 +53,7 @@ function market_init() {
 	elgg_register_action('market/save', __DIR__ . '/actions/save.php');
 	elgg_register_action('market/delete', __DIR__ . '/actions/delete.php');
 	elgg_register_action('market/delete_img', __DIR__ . '/actions/delete_img.php');
-	
+
 	//Likes
 	elgg_register_plugin_hook_handler('likes:is_likable', 'object:market', 'Elgg\Values::getTrue');
 }
@@ -69,7 +69,7 @@ function market_page_handler($segments, $identifier) {
 				'identifier' => $identifier,
 			]);
 			return true;
-			
+
 		case 'category' :
 			echo elgg_view('resources/market/category', [
 				'cat' => $segments[0],
@@ -90,14 +90,14 @@ function market_page_handler($segments, $identifier) {
 				'identifier' => $identifier,
 			]);
 			return true;
-		
+
 		case 'owned':
 		    echo elgg_view('resources/market/owned', [
 				'username' => $segments[0],
 				'identifier' => $identifier,
 			]);
 			return true;
-			
+
 		case 'group':
 		    echo elgg_view('resources/market/group', [
 				'group_guid' => $segments[0],
@@ -114,7 +114,7 @@ function market_page_handler($segments, $identifier) {
 				'identifier' => $identifier,
 			]);
 			return true;
-			
+
 		case 'image':
 		    echo elgg_view('resources/market/image', [
 				'guid' => $segments[0],
@@ -124,7 +124,7 @@ function market_page_handler($segments, $identifier) {
 				'identifier' => $identifier,
 			]);
 			return true;
-			
+
 		case 'terms' :
 			echo elgg_view('resources/market/terms', [
 				'identifier' => $identifier,
@@ -170,7 +170,7 @@ function market_expire_cron_hook($hook, $entity_type, $returnvalue, $params) {
 	$time_limit = strtotime("-$market_ttl months");
 
 	$ret = elgg_set_ignore_access(TRUE);
-	
+
 	$entities = elgg_get_entities(array(
 					'type' => 'object',
 					'subtype' => 'market',
@@ -193,9 +193,9 @@ function market_expire_cron_hook($hook, $entity_type, $returnvalue, $params) {
 		// Delete market post incl. pictures
 		market_delete_post($entity);
 	}
-	
+
 	$ret = elgg_set_ignore_access(FALSE);
-	
+
 }
 
 function market_notify_message($hook, $entity_type, $returnvalue, $params) {
